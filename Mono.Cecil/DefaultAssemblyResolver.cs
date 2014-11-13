@@ -26,6 +26,8 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+#if !PCL
+
 using System;
 using System.Collections.Generic;
 
@@ -68,3 +70,5 @@ namespace Mono.Cecil {
 		}
 	}
 }
+
+#endif

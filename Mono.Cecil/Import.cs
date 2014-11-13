@@ -26,6 +26,8 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+#if !READ_ONLY
+
 using System;
 using System.Collections.Generic;
 using Mono.Collections.Generic;
@@ -669,3 +671,5 @@ namespace Mono.Cecil {
 		}
 	}
 }
+
+#endif

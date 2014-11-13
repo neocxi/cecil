@@ -308,8 +308,10 @@ namespace Mono.Cecil {
 
 		public IAssemblyResolver AssemblyResolver {
 			get {
+#if !PCL
 				if (assembly_resolver == null)
 					Interlocked.CompareExchange (ref assembly_resolver, new DefaultAssemblyResolver (), null);
+#endif
 
 				return assembly_resolver;
 			}
@@ -614,16 +616,28 @@ namespace Mono.Cecil {
 
 		internal FieldDefinition Resolve (FieldReference field)
 		{
+#if PCL
+			if (MetadataResolver == null)
+				throw new NotSupportedException ();
+#endif
 			return MetadataResolver.Resolve (field);
 		}
 
 		internal MethodDefinition Resolve (MethodReference method)
 		{
+#if PCL
+			if (MetadataResolver == null)
+				throw new NotSupportedException ();
+#endif
 			return MetadataResolver.Resolve (method);
 		}
 
 		internal TypeDefinition Resolve (TypeReference type)
 		{
+#if PCL
+			if (MetadataResolver == null)
+				throw new NotSupportedException ();
+#endif
 			return MetadataResolver.Resolve (type);
 		}
 
@@ -896,6 +910,7 @@ namespace Mono.Cecil {
 
 #endif
 
+#if !PCL
 		public void ReadSymbols ()
 		{
 			if (string.IsNullOrEmpty (fq_name))
@@ -907,6 +922,7 @@ namespace Mono.Cecil {
 
 			ReadSymbols (provider.GetSymbolReader (this, fq_name));
 		}
+#endif
 
 		public void ReadSymbols (ISymbolReader reader)
 		{
