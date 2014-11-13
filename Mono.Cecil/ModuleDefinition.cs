@@ -918,14 +918,10 @@ namespace Mono.Cecil {
 			ProcessDebugHeader ();
 		}
 
+#if !PCL
 		public static ModuleDefinition ReadModule (string fileName)
 		{
 			return ReadModule (fileName, new ReaderParameters (ReadingMode.Deferred));
-		}
-
-		public static ModuleDefinition ReadModule (Stream stream)
-		{
-			return ReadModule (stream, new ReaderParameters (ReadingMode.Deferred));
 		}
 
 		public static ModuleDefinition ReadModule (string fileName, ReaderParameters parameters)
@@ -933,6 +929,22 @@ namespace Mono.Cecil {
 			using (var stream = GetFileStream (fileName, FileMode.Open, FileAccess.Read, FileShare.Read)) {
 				return ReadModule (stream, parameters);
 			}
+		}
+
+		static Stream GetFileStream (string fileName, FileMode mode, FileAccess access, FileShare share)
+		{
+			if (fileName == null)
+				throw new ArgumentNullException ("fileName");
+			if (fileName.Length == 0)
+				throw new ArgumentException ();
+
+			return new FileStream (fileName, mode, access, share);
+		}
+#endif
+
+		public static ModuleDefinition ReadModule (Stream stream)
+		{
+			return ReadModule (stream, new ReaderParameters (ReadingMode.Deferred));
 		}
 
 		static void CheckStream (object stream)
@@ -953,26 +965,12 @@ namespace Mono.Cecil {
 				parameters);
 		}
 
-		static Stream GetFileStream (string fileName, FileMode mode, FileAccess access, FileShare share)
-		{
-			if (fileName == null)
-				throw new ArgumentNullException ("fileName");
-			if (fileName.Length == 0)
-				throw new ArgumentException ();
-
-			return new FileStream (fileName, mode, access, share);
-		}
-
 #if !READ_ONLY
 
+#if !PCL
 		public void Write (string fileName)
 		{
 			Write (fileName, new WriterParameters ());
-		}
-
-		public void Write (Stream stream)
-		{
-			Write (stream, new WriterParameters ());
 		}
 
 		public void Write (string fileName, WriterParameters parameters)
@@ -980,6 +978,12 @@ namespace Mono.Cecil {
 			using (var stream = GetFileStream (fileName, FileMode.Create, FileAccess.ReadWrite, FileShare.None)) {
 				Write (stream, parameters);
 			}
+		}
+#endif
+
+		public void Write (Stream stream)
+		{
+			Write (stream, new WriterParameters ());
 		}
 
 		public void Write (Stream stream, WriterParameters parameters)

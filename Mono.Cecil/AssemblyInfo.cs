@@ -34,9 +34,10 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyProduct ("Mono.Cecil")]
 [assembly: AssemblyCopyright ("Copyright © 2008 - 2011 Jb Evain")]
 
+#if !PCL
 [assembly: ComVisible (false)]
-
 [assembly: Guid ("fd225bb4-fa53-44b2-a6db-85f5e48dcb54")]
+#endif
 
 [assembly: AssemblyVersion ("0.9.5.0")]
 #if !CF
