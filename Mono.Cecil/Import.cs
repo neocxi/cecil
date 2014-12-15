@@ -119,7 +119,7 @@ namespace Mono.Cecil {
 			this.module = module;
 		}
 
-#if !CF
+#if !CF && !CORECLR
 		static readonly Dictionary<Type, ElementType> type_etype_mapping = new Dictionary<Type, ElementType> (18) {
 			{ typeof (void), ElementType.Void },
 			{ typeof (bool), ElementType.Boolean },

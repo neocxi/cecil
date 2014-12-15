@@ -31,6 +31,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
+using Mono;
 using Mono.Collections.Generic;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Metadata;
@@ -96,7 +97,7 @@ namespace Mono.Cecil {
 				symbol_writer_provider = SymbolProvider.GetPlatformWriterProvider ();
 			var symbol_writer = GetSymbolWriter (module, fq_name, symbol_writer_provider);
 
-#if !SILVERLIGHT && !CF
+#if !SILVERLIGHT && !CF && !CORECLR
 			if (parameters.StrongNameKeyPair != null && name != null) {
 				name.PublicKey = parameters.StrongNameKeyPair.PublicKey;
 				module.Attributes |= ModuleAttributes.StrongNameSigned;
@@ -114,7 +115,7 @@ namespace Mono.Cecil {
 
 			writer.WriteImage ();
 
-#if !SILVERLIGHT && !CF
+#if !SILVERLIGHT && !CF && !CORECLR
 			if (parameters.StrongNameKeyPair != null)
 				CryptoService.StrongName (stream, writer, parameters.StrongNameKeyPair);
 #endif
@@ -1683,7 +1684,7 @@ namespace Mono.Cecil {
 
 		static ElementType GetConstantType (Type type)
 		{
-			switch (Type.GetTypeCode (type)) {
+			switch (type.GetTypeCode ()) {
 			case TypeCode.Boolean:
 				return ElementType.Boolean;
 			case TypeCode.Byte:
@@ -2327,7 +2328,7 @@ namespace Mono.Cecil {
 			if (value == null)
 				throw new ArgumentNullException ();
 
-			switch (Type.GetTypeCode (value.GetType ())) {
+			switch (value.GetType ().GetTypeCode ()) {
 			case TypeCode.Boolean:
 				WriteByte ((byte) (((bool) value) ? 1 : 0));
 				break;

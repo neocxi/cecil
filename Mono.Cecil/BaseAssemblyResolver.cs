@@ -51,7 +51,7 @@ namespace Mono.Cecil {
 		}
 	}
 
-#if !SILVERLIGHT && !CF
+#if !SILVERLIGHT && !CF && !CORECLR
 	[Serializable]
 #endif
 	public class AssemblyResolutionException : FileNotFoundException {
@@ -68,7 +68,7 @@ namespace Mono.Cecil {
 			this.reference = reference;
 		}
 
-#if !SILVERLIGHT && !CF
+#if !SILVERLIGHT && !CF && !CORECLR
 		protected AssemblyResolutionException (
 			System.Runtime.Serialization.SerializationInfo info,
 			System.Runtime.Serialization.StreamingContext context)
@@ -84,7 +84,7 @@ namespace Mono.Cecil {
 
 		readonly Collection<string> directories;
 
-#if !SILVERLIGHT && !CF
+#if !SILVERLIGHT && !CF && !CORECLR
 		Collection<string> gac_paths;
 #endif
 
@@ -149,7 +149,7 @@ namespace Mono.Cecil {
 			if (assembly != null)
 				return assembly;
 
-#if !SILVERLIGHT && !CF
+#if !SILVERLIGHT && !CF && !CORECLR
 			if (name.IsRetargetable) {
 				// if the reference is retargetable, zero it
 				name = new AssemblyNameReference (name.Name, new Version (0, 0, 0, 0)) {
@@ -208,7 +208,7 @@ namespace Mono.Cecil {
 			return version == null || (version.Major == 0 && version.Minor == 0 && version.Build == 0 && version.Revision == 0);
 		}
 
-#if !SILVERLIGHT && !CF
+#if !SILVERLIGHT && !CF && !CORECLR
 		AssemblyDefinition GetCorlib (AssemblyNameReference reference, ReaderParameters parameters)
 		{
 			var version = reference.Version;

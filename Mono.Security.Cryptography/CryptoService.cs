@@ -33,7 +33,7 @@ using System.Security.Cryptography;
 
 #if !READ_ONLY
 
-#if !SILVERLIGHT && !CF
+#if !SILVERLIGHT && !CF && !CORECLR
 using System.Runtime.Serialization;
 using Mono.Security.Cryptography;
 #endif
@@ -48,7 +48,7 @@ namespace Mono.Cecil {
 
 	static class CryptoService {
 
-#if !SILVERLIGHT && !CF
+#if !SILVERLIGHT && !CF && !CORECLR
 		public static void StrongName (Stream stream, ImageWriter writer, StrongNameKeyPair key_pair)
 		{
 			int strong_name_pointer;
@@ -111,37 +111,31 @@ namespace Mono.Cecil {
 			return sha1.Hash;
 		}
 #endif
-		static void CopyStreamChunk (Stream stream, Stream dest_stream, byte [] buffer, int length)
-		{
-			while (length > 0) {
-				int read = stream.Read (buffer, 0, System.Math.Min (buffer.Length, length));
-				dest_stream.Write (buffer, 0, read);
-				length -= read;
-			}
-		}
 
 		public static byte [] ComputeHash (string file)
 		{
 			if (!File.Exists (file))
 				return Empty<byte>.Array;
 
+#if CORECLR
+			return Empty<byte>.Array;
+#else
 			const int buffer_size = 8192;
 
-			var sha1 = new SHA1Managed ();
+			var sha1 = SHA1.Create ();
 
 			using (var stream = new FileStream (file, FileMode.Open, FileAccess.Read, FileShare.Read)) {
 
 				var buffer = new byte [buffer_size];
 
 				using (var crypto_stream = new CryptoStream (Stream.Null, sha1, CryptoStreamMode.Write))
-					CopyStreamChunk (stream, crypto_stream, buffer, (int) stream.Length);
+					return sha1.ComputeHash (crypto_stream);
 			}
+#endif
+        }
+    }
 
-			return sha1.Hash;
-		}
-	}
-
-#if !SILVERLIGHT && !CF
+#if !SILVERLIGHT && !CF && !CORECLR
 	static partial class Mixin {
 
 		public static RSA CreateRSA (this StrongNameKeyPair key_pair)

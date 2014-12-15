@@ -138,10 +138,10 @@ namespace Mono.Cecil {
 
 		static TargetRuntime GetCurrentRuntime ()
 		{
-#if !CF
+#if !CF && !CORECLR
 			return typeof (object).Assembly.ImageRuntimeVersion.ParseRuntime ();
 #else
-			var corlib_version = typeof (object).Assembly.GetName ().Version;
+			var corlib_version = typeof (object).GetAssembly ().GetName ().Version;
 			switch (corlib_version.Major) {
 			case 1:
 				return corlib_version.Minor == 0
@@ -163,7 +163,7 @@ namespace Mono.Cecil {
 		Stream symbol_stream;
 		ISymbolWriterProvider symbol_writer_provider;
 		bool write_symbols;
-#if !SILVERLIGHT && !CF
+#if !SILVERLIGHT && !CF && !CORECLR
 		SR.StrongNameKeyPair key_pair;
 #endif
 		public Stream SymbolStream {
@@ -180,7 +180,7 @@ namespace Mono.Cecil {
 			get { return write_symbols; }
 			set { write_symbols = value; }
 		}
-#if !SILVERLIGHT && !CF
+#if !SILVERLIGHT && !CF && !CORECLR
 		public SR.StrongNameKeyPair StrongNameKeyPair {
 			get { return key_pair; }
 			set { key_pair = value; }
@@ -661,7 +661,7 @@ namespace Mono.Cecil {
 			return context != null ? new ImportGenericContext (context) : default (ImportGenericContext);
 		}
 
-#if !CF
+#if !CF && !CORECLR
 
 		public TypeReference Import (Type type)
 		{
