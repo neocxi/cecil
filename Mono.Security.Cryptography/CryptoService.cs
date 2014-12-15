@@ -110,6 +110,15 @@ namespace Mono.Cecil {
 
 			return sha1.Hash;
 		}
+
+		static void CopyStreamChunk (Stream stream, Stream dest_stream, byte [] buffer, int length)
+		{
+			while (length > 0) {
+				int read = stream.Read (buffer, 0, System.Math.Min (buffer.Length, length));
+				dest_stream.Write (buffer, 0, read);
+				length -= read;
+			}
+		}
 #endif
 
 		public static byte [] ComputeHash (string file)
@@ -122,15 +131,17 @@ namespace Mono.Cecil {
 #else
 			const int buffer_size = 8192;
 
-			var sha1 = SHA1.Create ();
+			var sha1 = new SHA1Managed ();
 
 			using (var stream = new FileStream (file, FileMode.Open, FileAccess.Read, FileShare.Read)) {
 
 				var buffer = new byte [buffer_size];
 
 				using (var crypto_stream = new CryptoStream (Stream.Null, sha1, CryptoStreamMode.Write))
-					return sha1.ComputeHash (crypto_stream);
+					CopyStreamChunk (stream, crypto_stream, buffer, (int) stream.Length);
 			}
+
+			return sha1.Hash;
 #endif
         }
     }
