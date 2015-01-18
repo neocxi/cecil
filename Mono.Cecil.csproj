@@ -5,6 +5,14 @@
     <ProjectGuid>{D68133BD-1E63-496E-9EDE-4FBDBF77B486}</ProjectGuid>
     <RootNamespace>Mono.Cecil</RootNamespace>
     <AssemblyName>Mono.Cecil</AssemblyName>
+    <OutputType>Library</OutputType>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup Condition=" '$(TargetFrameworkVersion)' != 'v2.0' ">
     <Reference Include="System.Core" />
